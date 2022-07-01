@@ -4,7 +4,7 @@ export default class Search extends React.Component {
   render() {
     return (
       <div data-testid="page-search">
-        Search
+        {/* texto */}
       </div>
     );
   }
