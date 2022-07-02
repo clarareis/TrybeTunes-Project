@@ -4,7 +4,6 @@ class Header extends React.Component {
   render() {
     return (
       <section>
-        <h4> Menu</h4>
         <nav>
           <a href="/">Login</a>
           <a href="/search">Search</a>
