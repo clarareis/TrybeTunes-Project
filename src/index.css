@@ -18,3 +18,9 @@ code {
   justify-content: center;
   color: blue;
 }
+
+.selected {
+  background-color: pink;
+  font-size: 20px;
+  border: 1px solid blue;
+}
