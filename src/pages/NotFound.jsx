@@ -1,7 +1,7 @@
-/* eslint-disable react/prop-types */
+import PropTypes from 'prop-types';
 import React from 'react';
 
-export default class NotFound extends React.Component {
+class NotFound extends React.Component {
   back = () => {
     const { history } = this.props;
     history.push('/');
@@ -21,3 +21,9 @@ export default class NotFound extends React.Component {
     );
   }
 }
+
+NotFound.propTypes = {
+  history: PropTypes.node.isRequired,
+};
+
+export default NotFound;

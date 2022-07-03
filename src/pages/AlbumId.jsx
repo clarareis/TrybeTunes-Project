@@ -1,10 +1,10 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/prop-types */
+import PropTypes from 'prop-types';
 import React from 'react';
 
-export default class AlbumId extends React.Component {
+class AlbumId extends React.Component {
   render() {
-    const { id } = this.props.match.params;
+    const { match } = this.props;
+    const { id } = match.params;
     return (
       <div data-testid="page-album">
         album id
@@ -13,3 +13,9 @@ export default class AlbumId extends React.Component {
     );
   }
 }
+
+AlbumId.propTypes = {
+  match: PropTypes.node.isRequired,
+};
+
+export default AlbumId;
