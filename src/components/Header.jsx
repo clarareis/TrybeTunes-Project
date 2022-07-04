@@ -1,12 +1,21 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+// import { getUser } from '../services/userAPI';
+// import Loading from '../pages/Loading';
 
 class Header extends React.Component {
   render() {
     return (
-      <section>
-        <nav data-testid="header-component">
-          <NavLink to="/" activeClassName="selected" exact>Login</NavLink>
+      <header data-testid="header-component">
+        <span data-testid="header-user-name" />
+        <nav>
+          <NavLink
+            to="/"
+            activeClassName="selected"
+            exact
+          >
+            Login
+          </NavLink>
           <NavLink
             to="/search"
             activeClassName="selected"
@@ -14,7 +23,12 @@ class Header extends React.Component {
           >
             Search
           </NavLink>
-          <NavLink to="/album/" activeClassName="selected">Album</NavLink>
+          <NavLink
+            to="/album/:id"
+            activeClassName="selected"
+          >
+            Albuns
+          </NavLink>
           <NavLink
             to="/favorites"
             activeClassName="selected"
@@ -30,9 +44,14 @@ class Header extends React.Component {
           >
             Perfil
           </NavLink>
-          <NavLink to="/profile/edit" activeClassName="selected">Editar Perfil</NavLink>
+          <NavLink
+            to="/profile/edit"
+            activeClassName="selected"
+          >
+            Editar Perfil
+          </NavLink>
         </nav>
-      </section>
+      </header>
     );
   }
 }

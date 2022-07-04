@@ -7,7 +7,6 @@ class Login extends React.Component {
     this.state = {
       inputName: '',
       buttonDisabled: true,
-      loading: false,
     };
   }
 
@@ -28,16 +27,10 @@ class Login extends React.Component {
     }, () => this.validateInputName());
   };
 
-  onSaveButtonClick = async (event) => {
-    this.setState({
-      loading: true,
-    });
+  onSaveButtonClick = async () => {
     const { inputName,
     } = this.state;
     await createUser({ name: inputName });
-    this.setState({
-      loading: false,
-    });
   }
 
   render() {
