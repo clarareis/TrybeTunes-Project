@@ -1,5 +1,4 @@
 import React from 'react';
-import Header from '../components/Header';
 
 class Search extends React.Component {
   constructor() {
@@ -34,7 +33,6 @@ class Search extends React.Component {
     } = this.state;
     return (
       <div data-testid="page-search">
-        <Header />
         <form>
           <input
             type="text"
