@@ -1,5 +1,7 @@
 import React from 'react';
+import { Redirect } from 'react-router';
 import { createUser } from '../services/userAPI';
+import Loading from './Loading';
 
 class Login extends React.Component {
   constructor() {
@@ -7,6 +9,7 @@ class Login extends React.Component {
     this.state = {
       inputName: '',
       buttonDisabled: true,
+      loading: false,
     };
   }
 
@@ -27,39 +30,51 @@ class Login extends React.Component {
     }, () => this.validateInputName());
   };
 
-  onSaveButtonClick = async () => {
-    const { inputName,
-    } = this.state;
-    await createUser({ name: inputName });
-  }
+    onSaveButtonClick = async (event) => {
+      event.preventDefault();
+      const { inputName: name,
+      } = this.state;
+      this.setState({ loading: true });
+      await createUser(
+        { name },
+      );
+      this.setState({
+        loading: true,
+        logado: true,
+      });
+    }
 
-  render() {
-    const {
-      inputName,
-      buttonDisabled,
-    } = this.state;
-    return (
-      <div data-testid="page-login">
-        <form>
-          <input
-            data-testid="login-name-input"
-            type="text"
-            name="inputName"
-            value={ inputName }
-            onChange={ this.onInputChange }
-          />
-          <button
-            data-testid="login-submit-button"
-            type="submit"
-            disabled={ buttonDisabled }
-            onClick={ this.onSaveButtonClick }
-          >
-            Entrar
-          </button>
-        </form>
-      </div>
-    );
-  }
+    render() {
+      const {
+        inputName,
+        buttonDisabled,
+        loading,
+        logado,
+      } = this.state;
+      return (
+        <div data-testid="page-login">
+          { loading && <Loading /> }
+          { logado && <Redirect to="/search" /> }
+          <form>
+            <input
+              data-testid="login-name-input"
+              type="text"
+              name="inputName"
+              value={ inputName }
+              onChange={ this.onInputChange }
+            />
+            <button
+              data-testid="login-submit-button"
+              type="submit"
+              disabled={ buttonDisabled }
+              onClick={ this.onSaveButtonClick }
+            >
+              Entrar
+            </button>
+          </form>
+        </div>
+      );
+    }
 }
 
 export default Login;
