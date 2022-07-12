@@ -9,77 +9,78 @@ class Album extends React.Component {
   constructor() {
     super();
     this.state = {
-      musics: [],
+      albumCurrent: [],
       loading: true,
       favoriteMusics: [],
-      carregando: false,
+      load: false,
     };
   }
 
   componentDidMount() {
     this.getId();
-    this.putMusic();
+    this.musicpush();
   }
 
-    putMusic = async () => {
-      this.setState({ favoriteMusics: await getFavoriteSongs() });
-    }
+  musicpush = async () => {
+    this.setState({ favoriteMusics: await getFavoriteSongs() });
+  }
 
-    saveFavorites = async (event) => {
-      const { musics } = this.state;
-      const song = musics.find((music) => music.trackId === Number(event.target.id));
-      this.setState({ carregando: true });
-      await addSong(song);
-      this.setState((prevState) => ({
-        favoriteMusics: [...prevState.favoriteMusics, song],
-      }));
-      this.setState({ carregando: false });
-    }
+  functionGetMusicsFavorites = async ({ target }) => {
+    const { id } = target;
+    const { albumCurrent } = this.state;
+    const music = albumCurrent
+      .find((element) => element.trackId === Number(id));
+    this.setState({ load: true });
+    await addSong(music);
+    this.setState((prevState) => ({
+      favoriteMusics: [...prevState.favoriteMusics, music],
+    }));
+    this.setState({ load: false });
+  }
 
     getId = async () => {
       const { match } = this.props;
       const { params } = match;
       const { id } = params;
-      const album = await getMusics(id);
+      const responseOfAlbum = await getMusics(id);
 
       this.setState({
-        musics: album,
+        albumCurrent: responseOfAlbum,
         loading: false,
       });
     }
 
     render() {
-      const { musics, loading, favoriteMusics, carregando } = this.state;
+      const { albumCurrent, loading, favoriteMusics, load } = this.state;
       return (
         <div data-testid="page-album">
           {loading ? (
             <Loading />
           ) : (
-            <>
+            <div>
               <p data-testid="artist-name">
-                {musics[0].artistName}
+                {albumCurrent[0].artistName}
               </p>
-
               <p data-testid="album-name">
-                {musics[0].collectionName}
+                {albumCurrent[0].collectionName}
               </p>
-              {carregando ? (
+              {load ? (
                 <Loading />
               ) : (
-                <>
-                  {musics.slice(1).map((music) => (
+                <div>
+                  {albumCurrent.slice(1).map((music) => (
                     <MusicCard
                       musicId={ music.trackId }
                       key={ music.trackId }
                       track={ music.trackName }
                       preview={ music.previewUrl }
-                      saveFavorites={ this.saveFavorites }
+                      saveFavorites={ this.functionGetMusicsFavorites }
                       favoriteMusics={ favoriteMusics }
                     />
                   ))}
-                </>
+                </div>
               )}
-            </>
+            </div>
           )}
         </div>
       );

@@ -8,47 +8,47 @@ class Search extends React.Component {
     super();
     this.state = {
       inputName: '',
-      saveName: '',
+      saveArtistName: '',
       buttonDisable: true,
-      todosAlbuns: [],
+      allAlbunsRecive: [],
       loading: false,
     };
   }
 
-  handleChange = ({ target }) => {
+  handleInputChange = ({ target }) => {
     const { value } = target;
-    this.setState({ inputName: value }, () => this.validation());
+    this.setState({ inputName: value }, () => this.inputValidation());
   }
 
-  validation = () => {
-    const min = 2;
+  inputValidation = () => {
+    const inputPropNameLength = 2;
     const { inputName } = this.state;
-    if (inputName.length >= min) {
+    if (inputName.length >= inputPropNameLength) {
       this.setState({ buttonDisable: false });
     } else {
       this.setState({ buttonDisable: true });
     }
   };
 
-  onClick = async (event) => {
+  buttonClick = async (event) => {
     event.preventDefault();
     this.setState({ loading: true });
     const { inputName } = this.state;
-    const respostaApi = await searchAlbumsAPI(inputName);
+    const responseApi = await searchAlbumsAPI(inputName);
     this.setState({
       inputName: '',
-      todosAlbuns: respostaApi,
-      saveName: inputName,
+      allAlbunsRecive: responseApi,
+      saveArtistName: inputName,
     }, () => {
       this.setState({ loading: false });
     });
   }
 
-  renderArtists = () => {
-    const { todosAlbuns } = this.state;
-    if (todosAlbuns.length !== 0) {
+  getAlbuns = () => {
+    const { allAlbunsRecive } = this.state;
+    if (allAlbunsRecive.length !== 0) {
       return (
-        todosAlbuns
+        allAlbunsRecive
           .map(({ collectionId, artistName, artworkUrl100, collectionName }) => (
             <div key={ collectionId }>
               <Link
@@ -63,11 +63,15 @@ class Search extends React.Component {
             </div>
           ))
       );
-    } return <span>Nenhum álbum foi encontrado</span>;
+    } return <p>Nenhum álbum foi encontrado</p>;
   }
 
   render() {
-    const { inputName, buttonDisable, loading, saveName, todosAlbuns } = this.state;
+    const { inputName,
+      buttonDisable,
+      loading,
+      saveArtistName,
+      allAlbunsRecive } = this.state;
     return (
       <div data-testid="page-search">
 
@@ -75,12 +79,12 @@ class Search extends React.Component {
           : (
             <div>
               <form>
-                Nome do Artista
                 <input
                   type="text"
                   name="inputName"
                   value={ inputName }
-                  onChange={ this.handleChange }
+                  onChange={ this.handleInputChange }
+                  placeholder="Nome do artista"
                   data-testid="search-artist-input"
                 />
                 <button
@@ -88,13 +92,13 @@ class Search extends React.Component {
                   name="username"
                   data-testid="search-artist-button"
                   disabled={ buttonDisable }
-                  onClick={ this.onClick }
+                  onClick={ this.buttonClick }
                 >
                   Pesquisar
                 </button>
               </form>
-              {todosAlbuns.length > 0 && `Resultado de álbuns de: ${saveName}`}
-              {this.renderArtists()}
+              {allAlbunsRecive.length > 0 && `Resultado de álbuns de: ${saveArtistName}`}
+              {this.getAlbuns()}
             </div>
           )}
       </div>
