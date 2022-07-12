@@ -1,9 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import Loading from '../pages/Loading';
 import { getUser } from '../services/userAPI';
-// import { getUser } from '../services/userAPI';
-// import Loading from '../pages/Loading';
+import Loading from './Loading';
 
 class Header extends React.Component {
   constructor() {
@@ -22,9 +20,9 @@ class Header extends React.Component {
     this.setState({
       loading: true,
     });
-    const xablau = await getUser();
+    const user = await getUser();
     this.setState({
-      userName: xablau.name,
+      userName: user.name,
       loading: false,
     });
   }
@@ -63,6 +61,12 @@ class Header extends React.Component {
                   data-testid="link-to-profile"
                 >
                   Perfil
+                </NavLink>
+                <NavLink
+                  to="/album"
+                  activeClassName="selected"
+                >
+                  Album
                 </NavLink>
               </nav>
             </div>

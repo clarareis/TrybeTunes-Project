@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router';
+import Loading from '../components/Loading';
 import { createUser } from '../services/userAPI';
-import Loading from './Loading';
 
 class Login extends React.Component {
   constructor() {
@@ -10,6 +10,7 @@ class Login extends React.Component {
       inputName: '',
       buttonDisabled: true,
       loading: false,
+      log: false,
     };
   }
 
@@ -30,8 +31,7 @@ class Login extends React.Component {
     }, () => this.validateInputName());
   };
 
-    onSaveButtonClick = async (event) => {
-      event.preventDefault();
+    onSaveButtonClick = async () => {
       const { inputName: name,
       } = this.state;
       this.setState({ loading: true });
@@ -40,7 +40,7 @@ class Login extends React.Component {
       );
       this.setState({
         loading: true,
-        logado: true,
+        log: true,
       });
     }
 
@@ -49,18 +49,19 @@ class Login extends React.Component {
         inputName,
         buttonDisabled,
         loading,
-        logado,
+        log,
       } = this.state;
       return (
         <div data-testid="page-login">
           { loading && <Loading /> }
-          { logado && <Redirect to="/search" /> }
+          { log && <Redirect to="/search" /> }
           <form>
             <input
               data-testid="login-name-input"
               type="text"
               name="inputName"
               value={ inputName }
+              placeholder="Coloque aqui o seu usuário"
               onChange={ this.onInputChange }
             />
             <button

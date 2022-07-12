@@ -1,58 +1,104 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import Loading from '../components/Loading';
+import searchAlbumsAPI from '../services/searchAlbumsAPI';
 
 class Search extends React.Component {
   constructor() {
     super();
     this.state = {
-      inputNameSearch: '',
-      buttonDisabled: true,
+      inputName: '',
+      saveName: '',
+      buttonDisable: true,
+      todosAlbuns: [],
+      loading: false,
     };
   }
 
-  validateInputName = () => {
-    const { inputNameSearch } = this.state;
-    const inputPropNameLength = 2;
-    if (inputNameSearch.length >= inputPropNameLength) {
-      this.setState({ buttonDisabled: false });
+  handleChange = ({ target }) => {
+    const { value } = target;
+    this.setState({ inputName: value }, () => this.validation());
+  }
+
+  validation = () => {
+    const min = 2;
+    const { inputName } = this.state;
+    if (inputName.length >= min) {
+      this.setState({ buttonDisable: false });
     } else {
-      this.setState({ buttonDisabled: true });
+      this.setState({ buttonDisable: true });
     }
   };
 
-  onInputChange = ({ target }) => {
-    const { value } = target;
+  onClick = async (event) => {
+    event.preventDefault();
+    this.setState({ loading: true });
+    const { inputName } = this.state;
+    const respostaApi = await searchAlbumsAPI(inputName);
     this.setState({
-      inputNameSearch: value,
-    }, () => this.validateInputName());
-  };
+      inputName: '',
+      todosAlbuns: respostaApi,
+      saveName: inputName,
+    }, () => {
+      this.setState({ loading: false });
+    });
+  }
+
+  renderArtists = () => {
+    const { todosAlbuns } = this.state;
+    if (todosAlbuns.length !== 0) {
+      return (
+        todosAlbuns
+          .map(({ collectionId, artistName, artworkUrl100, collectionName }) => (
+            <div key={ collectionId }>
+              <Link
+                to={ `/album/${collectionId}` }
+                data-testid={ `link-to-album-${collectionId}` }
+              >
+
+                <img src={ artworkUrl100 } alt={ collectionName } />
+                <p>{ collectionName}</p>
+                <p>{artistName}</p>
+              </Link>
+            </div>
+          ))
+      );
+    } return <span>Nenhum álbum foi encontrado</span>;
+  }
 
   render() {
-    const {
-      inputNameSearch,
-      buttonDisabled,
-    } = this.state;
+    const { inputName, buttonDisable, loading, saveName, todosAlbuns } = this.state;
     return (
       <div data-testid="page-search">
-        <form>
-          <input
-            type="text"
-            data-testid="search-artist-input"
-            name="inputNameSearch"
-            value={ inputNameSearch }
-            onChange={ this.onInputChange }
-          />
-          <button
-            data-testid="search-artist-button"
-            type="submit"
-            disabled={ buttonDisabled }
-            // onClick={ this.validateInputName }
-          >
-            Pesquisar
-          </button>
-        </form>
+
+        {loading ? <Loading />
+          : (
+            <div>
+              <form>
+                Nome do Artista
+                <input
+                  type="text"
+                  name="inputName"
+                  value={ inputName }
+                  onChange={ this.handleChange }
+                  data-testid="search-artist-input"
+                />
+                <button
+                  type="submit"
+                  name="username"
+                  data-testid="search-artist-button"
+                  disabled={ buttonDisable }
+                  onClick={ this.onClick }
+                >
+                  Pesquisar
+                </button>
+              </form>
+              {todosAlbuns.length > 0 && `Resultado de álbuns de: ${saveName}`}
+              {this.renderArtists()}
+            </div>
+          )}
       </div>
     );
   }
 }
-
 export default Search;
